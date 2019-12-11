@@ -83,28 +83,6 @@ class NeuralNetwork:
 
         return biases
 
-    def feed_forward(self, inputs: np.array) -> np.array:
-        """Outputs the network output using feed forward propagation
-
-        Arguments:
-            inputs {np.array} -- network inputs
-
-        Returns:
-            np.array -- network output
-        """
-        previous_layer_output = inputs
-        for layer_biases, layer_weights, activation_function in zip(self.biases, self.weights, self.activations):
-            layer_output = []
-            for node_bias, node_weights in zip(layer_biases, layer_weights):
-
-                # apply the activation function on the output of the previous layer and add the node bias
-                layer_output.append(
-                    self._activation_function(sum(previous_layer_output * node_weights), function=activation_function)
-                    + node_bias
-                )
-            previous_layer_output = np.array(layer_output)
-        return previous_layer_output
-
     def _activation_function(
         self, x: float, function: str = "relu", deriv: bool = False
     ) -> float:
@@ -127,10 +105,33 @@ class NeuralNetwork:
 
         elif function == "sigmoid":
             if deriv:
-                return x * (x - 1)
+                dx = 1.0 / (1.0 + np.exp(-x))
+                return dx * (1 - dx)
             return 1.0 / (1.0 + np.exp(-x))    
         else:
             raise NotImplementedError(f"Function {function} not implemented")
+
+    def feed_forward(self, inputs: np.array) -> np.array:
+        """Outputs the network output using feed forward propagation
+
+        Arguments:
+            inputs {np.array} -- network inputs
+
+        Returns:
+            np.array -- network output
+        """
+        previous_layer_output = inputs
+        for layer_biases, layer_weights, activation_function in zip(self.biases, self.weights, self.activations):
+            layer_output = []
+            for node_bias, node_weights in zip(layer_biases, layer_weights):
+
+                # apply the activation function on the output of the previous layer and add the node bias
+                layer_output.append(
+                    self._activation_function(sum(previous_layer_output * node_weights), function=activation_function)
+                    + node_bias
+                )
+            previous_layer_output = np.array(layer_output)
+        return previous_layer_output
 
 
 if __name__ == "__main__":
