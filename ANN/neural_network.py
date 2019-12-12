@@ -339,10 +339,10 @@ class NeuralNetwork:
 
 
 if __name__ == "__main__":
-    n = NeuralNetwork([2, 3, 1], activations="sigmoid", learning_rate=0.01)
+    n = NeuralNetwork([2, 3, 1], activations="sigmoid", learning_rate=0.5)
     xor_train = np.array([[0, 0], [1, 0], [0, 1], [1, 1]])
     xor_test = np.array([[0], [1], [1], [0]])
-    n.train(xor_train, xor_test, 100000)
+    n.train(xor_train, xor_test, 10000)
     print(n.feed_forward(xor_train[0]))
     print(n.feed_forward(xor_train[1]))
     print(n.feed_forward(xor_train[2]))
