@@ -1,4 +1,4 @@
-# Spinning Up Tom
+# Spinning Up Tom (Thats me!)
 
 The point of this project is to learn everything that the
 SpinningUp website has to offer. The end product should be a
@@ -14,10 +14,9 @@ numpy and then with Tensorflow when completed)
 
 1. ANN module using only numpy that supports:
 
-   1. Forwards & backwards propagation
-   2. Any activation function for any layer
-   3. Dynamic layer building (like Keras)
-   4. BONUS: Convolutional layers
+   1. Forwards & backwards propagation - Done!
+   2. Any activation function for any layer - Done!
+   3. BONUS: Convolutional layers
 
 2. Implement Deep Q-Learning using ANN module on OpenAI-Gym
    environments.
