@@ -1,4 +1,4 @@
-# Spinning Up Tom (ME!)
+# Spinning Up Tom (Thats me!)
 
 The point of this project is to learn everything that the
 SpinningUp website has to offer. The end product should be a
