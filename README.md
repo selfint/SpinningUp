@@ -14,8 +14,8 @@ numpy and then with Tensorflow when completed)
 
 1. ANN module using only numpy that supports:
 
-   1. Forwards & backwards propagation
-   2. Any activation function for any layer
+   1. Forwards & backwards propagation - Done!
+   2. Any activation function for any layer - Done!
    3. Dynamic layer building (like Keras)
    4. BONUS: Convolutional layers
 
