@@ -103,7 +103,7 @@ class NeuralNetwork:
         """
         if function == "relu":
             if deriv:
-                return 0 if x <= 0 else 1
+                return 0 if x < 0 else 1
             return max(0, x)
 
         elif function == "sigmoid":
@@ -339,10 +339,10 @@ class NeuralNetwork:
 
 
 if __name__ == "__main__":
-    n = NeuralNetwork([2, 3, 1], activations="sigmoid", learning_rate=0.5)
+    n = NeuralNetwork([2, 10, 1], activations=["relu", "sigmoid"], learning_rate=0.5)
     xor_train = np.array([[0, 0], [1, 0], [0, 1], [1, 1]])
     xor_test = np.array([[0], [1], [1], [0]])
-    n.train(xor_train, xor_test, 10000)
+    n.train(xor_train, xor_test, 1000)
     print(n.feed_forward(xor_train[0]))
     print(n.feed_forward(xor_train[1]))
     print(n.feed_forward(xor_train[2]))
