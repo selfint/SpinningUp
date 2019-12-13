@@ -138,15 +138,13 @@ class NeuralNetwork:
 
 
 if __name__ == "__main__":
-    n = NeuralNetwork(learning_rate=2)
-    n.append_layer(Dense(4, 2))
-    n.append_layer(Dense(1, 4))
-    # n.train([np.array([0, 1]), np.array([1, 0])], [np.array([1]), np.array([0])], 1000)
-    # print(n.predict(np.array([0, 1])))
+    n = NeuralNetwork(cost_function="mse", learning_rate=0.01)
+    n.append_layer(Dense(size=4, input_dimensions=2, activation="relu"))
+    n.append_layer(Dense(size=1, input_dimensions=4, activation="sigmoid"))
 
     xor_train = np.array([[0, 0], [1, 0], [0, 1], [1, 1]])
     xor_test = np.array([[0], [1], [1], [0]])
-    n.train(xor_train, xor_test, 5000, verbose=True)
+    n.train(xor_train, xor_test, 20000, verbose=True)
     print(n.predict(xor_train[0]))
     print(n.predict(xor_train[1]))
     print(n.predict(xor_train[2]))
