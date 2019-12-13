@@ -16,7 +16,8 @@ numpy and then with Tensorflow when completed)
 
    1. Forwards & backwards propagation - Done!
    2. Any activation function for any layer - Done!
-   3. BONUS: Convolutional layers
+   3. Dynamic layer building (like Keras) - Done!
+   4. BONUS: Convolutional layers
 
 2. Implement Deep Q-Learning using ANN module on OpenAI-Gym
    environments.
