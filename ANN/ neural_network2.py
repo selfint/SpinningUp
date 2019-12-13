@@ -2,14 +2,19 @@ import numpy as np
 from typing import List, Union, Dict, Tuple
 from dense_layer import Dense
 from layer import Layer
+from cost_functions import COST_FUNCTIONS
 
 
 class NeuralNetwork:
     def __init__(self, cost_function: str = "mse", learning_rate: float = 0.01):
         self.layers: List[Layer] = []
-        self.cost_function = (
-            cost_function
-        )  # TODO: implement modular cost functions (easy)
+        try:
+            self.cost_function = COST_FUNCTIONS[cost_function]
+        except KeyError:
+            raise KeyError(
+                f"Cost function function {cost_function} is not defined in cost_functions.py file"
+            )
+
         self.learning_rate = learning_rate
 
     def append_layer(self, layer: Layer) -> None:
@@ -63,9 +68,7 @@ class NeuralNetwork:
             # manually calculate the gradient of the cost function relative to the output
             # of the last layers activations using the actual gradient formula of the cost function
             if layer_index == len(self.layers) - 1:
-                self.layers[-1].delta_neuron_activations = 2 * (
-                    network_prediction - target
-                )
+                self.layers[-1].delta_neuron_activations = self.cost_function(network_prediction, target, deriv=True)
             else:
                 next_layer = self.layers[layer_index + 1]
                 layer.calculate_delta_neuron_activations(next_layer)
