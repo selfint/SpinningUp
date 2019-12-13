@@ -86,7 +86,7 @@ class NeuralNetwork:
         return network_delta_weights_and_biases
 
     def train(
-        self, input_data: List[np.array], target_data: List[np.array], epochs: int
+        self, input_data: List[np.array], target_data: List[np.array], epochs: int, verbose: bool = False
     ) -> None:
         """Train the network using back propagation
         
@@ -94,12 +94,19 @@ class NeuralNetwork:
             input_data {List[np.array]} -- training data
             target_data {List[np.array]} -- training data labels
             epochs {int} -- how many epochs to train
+            verbose {bool} -- print training progress
         """
-        for _ in range(epochs):
+        for epoch in range(epochs):
+
+            if verbose:
+                network_cost = []
 
             # save all the updates for each layer for each training sample
             network_updates: List[dict] = []
             for row, target in zip(input_data, target_data):
+                if verbose:
+                    network_cost.append(self.cost_function(self.predict(row), target))
+
                 network_delta_weights_and_biases = self.calculate_network_delta_weights_and_biases(
                     row, target
                 )
@@ -125,6 +132,10 @@ class NeuralNetwork:
                 layer.weights -= avg_updates[layer][0] * self.learning_rate
                 layer.biases -= avg_updates[layer][1] * self.learning_rate
 
+            if verbose and epoch % 100 == 0:
+                avg_cost = sum(network_cost) / len(network_cost)
+                print(f"epoch {epoch}: loss={avg_cost}")
+
 
 if __name__ == "__main__":
     n = NeuralNetwork(learning_rate=2)
@@ -135,7 +146,7 @@ if __name__ == "__main__":
 
     xor_train = np.array([[0, 0], [1, 0], [0, 1], [1, 1]])
     xor_test = np.array([[0], [1], [1], [0]])
-    n.train(xor_train, xor_test, 5000)
+    n.train(xor_train, xor_test, 5000, verbose=True)
     print(n.predict(xor_train[0]))
     print(n.predict(xor_train[1]))
     print(n.predict(xor_train[2]))
