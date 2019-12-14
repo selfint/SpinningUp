@@ -1,12 +1,21 @@
 import numpy as np
 from typing import List, Union, Dict, Tuple
-from dense_layer import Dense
-from layer import Layer
+from dense_layer import Dense, Layer
 from cost_functions import COST_FUNCTIONS
 
 
 class NeuralNetwork:
     def __init__(self, cost_function: str = "mse", learning_rate: float = 0.01):
+        """Generate a base neural network that can store layers and use them
+        to make predictions on input data, and train them on test data
+        
+        Keyword Arguments:
+            cost_function {str} -- how to evaluate the error of the network (default: {"mse"})
+            learning_rate {float} -- step size when training the network (default: {0.01})
+        
+        Raises:
+            KeyError: only accepts cost_function defined in cost_functions.py
+        """
         self.layers: List[Layer] = []
         try:
             self.cost_function = COST_FUNCTIONS[cost_function]
@@ -73,7 +82,7 @@ class NeuralNetwork:
                 next_layer = self.layers[layer_index + 1]
                 layer.calculate_delta_neuron_activations(next_layer)
 
-        # calculate the change to each weight and bias
+        # calculate the change to each weight and bias in each layer
         previous_layer_activations = row
         for layer_index, layer in enumerate(self.layers):
             layer.calculate_delta_weights_biases(previous_layer_activations)
@@ -139,8 +148,8 @@ class NeuralNetwork:
 
 if __name__ == "__main__":
     n = NeuralNetwork(cost_function="mse", learning_rate=0.01)
-    n.append_layer(Dense(size=4, input_dimensions=2, activation="relu"))
-    n.append_layer(Dense(size=1, input_dimensions=4, activation="sigmoid"))
+    n.append_layer(Dense(size=10, input_dimensions=2, activation="relu"))
+    n.append_layer(Dense(size=1, input_dimensions=10, activation="sigmoid"))
 
     xor_train = np.array([[0, 0], [1, 0], [0, 1], [1, 1]])
     xor_test = np.array([[0], [1], [1], [0]])
