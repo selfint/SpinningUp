@@ -8,13 +8,18 @@ class Layer:
         self,
         size: int,
         input_dimensions: int,
-        activation: str = "sigmoid",
+        activation: str = "linear",
         weight_range: float = 1.0,
         bias_range: float = 1.0,
     ):
 
+        # the amount of neurons in the layer
         self.size = size
+
+        # the amount of inputs to the layer
         self.input_dimensions = input_dimensions
+
+        # the activation function for the layer, must be defined in activations.py
         try:
             self.activation = ACTIVATIONS[activation]
         except KeyError:
@@ -22,14 +27,22 @@ class Layer:
                 f"Activation function {activation} is not defined in activations.py file"
             )
 
-        self.neuron_inputs = np.zeros(size)  # the input for each neuron
-        self.neuron_activations = np.zeros(size)  # the activation of each neuron
+        # the input for each neuron
+        self.neuron_inputs = np.zeros(size)
+
+        # the activation of each neuron
+        self.neuron_activations = np.zeros(size)
 
         # these gradients represent the uphill direction of the cost function with respect to each, (respectively :P)
-        self.delta_neuron_activations = np.zeros(size)  # the gradient of the cost function respective to the neuron activaitons
-        self.delta_weights = np.zeros((size, input_dimensions))  # the gradient of the cost function respective to the weights
-        self.delta_biases = np.zeros(size)  # the gradient of the cost function respective to the biases
-        
+        # the gradient of the cost function respective to the neuron activaitons
+        self.delta_neuron_activations = np.zeros(size)
+
+        # the gradient of the cost function respective to the weights
+        self.delta_weights = np.zeros((size, input_dimensions))
+
+        # the gradient of the cost function respective to the biases
+        self.delta_biases = np.zeros(size)
+
         # generate random weights connecting each neuron to the neurons of the previous layer
         # i.e. weights[0][1] connects neuron 0 in this layer to neuron 1 in the previous layer
         # weights are generated with a uniform distrubtion ranging from -weight_range to weight_range
@@ -67,7 +80,9 @@ class Layer:
         """
         raise NotImplementedError()
 
-    def calculate_delta_weights_biases(self, previous_layer_activations: np.array) -> None:
+    def calculate_delta_weights_biases(
+        self, previous_layer_activations: np.array
+    ) -> None:
         """Calculate the gradient of the cost function with respect to each weight and bias in
         the layer.
         

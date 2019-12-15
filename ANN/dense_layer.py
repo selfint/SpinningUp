@@ -40,19 +40,18 @@ class Dense(Layer):
         for next_neuron_index, next_neuron_delta_activation in enumerate(
             next_layer.delta_neuron_activations
         ):
+
             # the gradient of the cost function with respect to each neuron, using the chain rule is:
             #     - the gradient of the cost function with respect to the NEXT neuron's activation
             #     - multiplied by the gradient of the NEXT neuron's activation with respect to the NEXT neuron's input
             #     - multiplied by the gradient of the NEXT neuron's input with respect to the weight connecting the
             #       CURRENT neuron to the NEXT neuron
             self.delta_neuron_activations += (
-                next_neuron_delta_activation  # gradient of the cost function with respect to the NEXT neuron's activation
+                next_neuron_delta_activation
                 * next_layer.activation(
                     next_layer.neuron_inputs[next_neuron_index], deriv=True
-                )  # gradient of the NEXT neuron's activation with respect to the NEXT neuron's input
-                * next_layer.weights[
-                    next_neuron_index
-                ]  # gradient of the NEXT neuron's input with respect to the weight connecting the CURRENT neuron to the NEXT neuron
+                )
+                * next_layer.weights[next_neuron_index]
             )
 
     def calculate_delta_weights_biases(self, previous_layer_activations: np.array):
@@ -65,13 +64,9 @@ class Dense(Layer):
             #     - multiplied by the gradient of the neuron's activation with respect to the neuron's input
             #     - multiplied by the gradient of the neuron's input with respect to the weight
             self.delta_weights[neuron_index] = (
-                self.delta_neuron_activations[
-                    neuron_index
-                ]  # gradient of the cost of the activation of the current neuron
-                * self.activation(
-                    self.neuron_inputs[neuron_index], deriv=False
-                )  # gradient of the activation of the current neuron
-                * previous_layer_activations  # activations of the previous layer
+                self.delta_neuron_activations[neuron_index]
+                * self.activation(self.neuron_inputs[neuron_index], deriv=False)
+                * previous_layer_activations
             )
 
         # get the delta for each bias in the layer
@@ -81,15 +76,9 @@ class Dense(Layer):
         #     - multiplied by the gradient of the neuron's input with respect to the bias
         #     * the gradient of the neuron's input with respect to the bias = 1, since the bias is just added
         #       to the input (see feed_forward function for the calculation of the neuron input)
-        self.delta_biases = (
-            self.delta_neuron_activations  # gradient of the cost of the activation of the current neuron
-            # map the activation function over the neurons inputs
-            # vectorize turns a normal function into one that can handle vectors
-            # (maybe it does more but thats how i use it here)
-            * np.vectorize(self.activation)(
-                self.neuron_inputs, deriv=False
-            )  # gradient of each neuron's activation with respect to its input
-        )
+        self.delta_biases = self.delta_neuron_activations * np.vectorize(
+            self.activation
+        )(self.neuron_inputs, deriv=False)
 
 
 if __name__ == "__main__":

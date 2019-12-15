@@ -77,9 +77,14 @@ class NeuralNetwork:
             # manually calculate the gradient of the cost function relative to the output
             # of the last layers activations using the actual gradient formula of the cost function
             if layer_index == len(self.layers) - 1:
-                self.layers[-1].delta_neuron_activations = self.cost_function(network_prediction, target, deriv=True)
+                self.layers[-1].delta_neuron_activations = self.cost_function(
+                    network_prediction, target, deriv=True
+                )
             else:
                 next_layer = self.layers[layer_index + 1]
+
+                # the gradient of the cost function relative the activations of neurons in this layer
+                # are relative to the next layer, see Dense.calculate_delta_neuron_activations for more help
                 layer.calculate_delta_neuron_activations(next_layer)
 
         # calculate the change to each weight and bias in each layer
@@ -88,14 +93,18 @@ class NeuralNetwork:
             layer.calculate_delta_weights_biases(previous_layer_activations)
             previous_layer_activations = layer.neuron_activations
 
-        # return network deltas
+        # return network deltas - the changes to each weight and bias in the network
         network_delta_weights_and_biases = {
             layer: (layer.delta_weights, layer.delta_biases) for layer in self.layers
         }
         return network_delta_weights_and_biases
 
     def train(
-        self, input_data: List[np.array], target_data: List[np.array], epochs: int, verbose: bool = False
+        self,
+        input_data: List[np.array],
+        target_data: List[np.array],
+        epochs: int,
+        verbose: bool = False,
     ) -> None:
         """Train the network using back propagation
         
@@ -116,6 +125,7 @@ class NeuralNetwork:
                 if verbose:
                     network_cost.append(self.cost_function(self.predict(row), target))
 
+                # get the changes to the weights and biases for this row and target in the training data
                 network_delta_weights_and_biases = self.calculate_network_delta_weights_and_biases(
                     row, target
                 )
@@ -136,7 +146,7 @@ class NeuralNetwork:
                 delta_weights /= len(network_updates)
                 delta_biases /= len(network_updates)
 
-            # apply changes
+            # apply changes, scaled by learning_rate
             for layer in self.layers:
                 layer.weights -= avg_updates[layer][0] * self.learning_rate
                 layer.biases -= avg_updates[layer][1] * self.learning_rate
@@ -147,9 +157,13 @@ class NeuralNetwork:
 
 
 if __name__ == "__main__":
+    
+    np.random.RandomState(seed=1)
+
     n = NeuralNetwork(cost_function="mse", learning_rate=0.01)
-    n.append_layer(Dense(size=10, input_dimensions=2, activation="relu"))
-    n.append_layer(Dense(size=1, input_dimensions=10, activation="sigmoid"))
+    n.append_layer(Dense(size=5, input_dimensions=2, activation="tanh"))
+    n.append_layer(Dense(size=5, input_dimensions=5, activation="sigmoid"))
+    n.append_layer(Dense(size=1, input_dimensions=5))
 
     xor_train = np.array([[0, 0], [1, 0], [0, 1], [1, 1]])
     xor_test = np.array([[0], [1], [1], [0]])
