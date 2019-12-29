@@ -65,7 +65,7 @@ class Dense(Layer):
             #     - multiplied by the gradient of the neuron's input with respect to the weight
             self.delta_weights[neuron_index] = (
                 self.delta_neuron_activations[neuron_index]
-                * self.activation(self.neuron_inputs[neuron_index], deriv=False)
+                * self.neuron_activations[neuron_index]
                 * previous_layer_activations
             )
 
