@@ -19,10 +19,12 @@ numpy and then with Tensorflow when completed)
    3. Dynamic layer building (like Keras) - Done!
    4. BONUS: Convolutional layers
 
-2. Implement Deep Q-Learning using ANN module on OpenAI-Gym
+2. ANN module using tensorflow - Done!
+
+3. Implement Deep Q-Learning using ANN module on OpenAI-Gym
    environments.
 
-3. Implement all following algorithms using Tensorflow:
+4. Implement all following algorithms using Tensorflow:
    1. Deep Q-Learning
    2. Proximal Policy Optimization
    3. Soft Actor Critic
