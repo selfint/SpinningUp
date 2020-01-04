@@ -21,10 +21,9 @@ numpy and then with Tensorflow when completed)
 
 2. ANN module using tensorflow - Done!
 
-3. Implement Deep Q-Learning using ANN module on OpenAI-Gym
-   environments.
+   1. Implement training over more than 1 sample   
+   2. BONUS: Implement dropout
+   3. BONUS: Implement another optimizer other than SGD
 
-4. Implement all following algorithms using Tensorflow:
-   1. Deep Q-Learning
-   2. Proximal Policy Optimization
-   3. Soft Actor Critic
+3. Implement Vanilla Policy Gradient, with a solid understanding
+   of the match behind it
