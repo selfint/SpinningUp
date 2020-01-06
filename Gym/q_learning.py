@@ -14,7 +14,18 @@ class QLearner(Agent):
         self.epsilon = 1.0
 
     def act(self, observation):
-        pass
+        """act according to an epsilon-greedy strategy using 
+        the agents q table
+        """
+
+        if np.random.rand() < self.epsilon:
+            # TODO: take random action
+            pass
+        else:
+            # TODO: take action with max q value
+            pass
 
     def learn(self, observation, action, reward, new_observation):
+        """update q table using reward
+        """
         pass
