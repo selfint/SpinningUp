@@ -1,41 +1,43 @@
 from agent import Agent
 import numpy as np
+from gym.spaces import Discrete
 
 
-EPSILON_DECAY = 0.01
+EPSILON_DECAY = 0.9999  # rate at which agent stops taking random actions
+GAMMA = 0.999  # discount rate, how much are future rewards important
+ALPHA = 0.05  # learning rate, how much does one sample influence agent
 
 
 class QLearner(Agent):
-    def __init__(
-        self, action_dim, observation_dim, action_space_type, observation_space_type
-    ):
-        super().__init__(
-            action_dim, observation_dim, action_space_type, observation_space_type
-        )
+    def __init__(self, action_space: Discrete, observation_space: Discrete):
+        super().__init__(action_space, observation_space)
 
         # only support discrete actions and obsercations
         # TODO: add continuous space support
-        assert (
-            action_space_type == "discrete" and observation_space_type == "discrete"
+        assert isinstance(action_space, Discrete) and isinstance(
+            observation_space, Discrete
         ), "Only discrete action and observation spaces supported"
 
         # generate empty q table
-        self.q_table = np.zeros(shape=(action_dim, observation_dim))
+        self.action_space = action_space
+        self.observation_space = observation_space
+        self.q_table = np.zeros(shape=(self.observation_space.n, self.action_space.n))
         self.epsilon = 1.0
 
     def act(self, observation):
         """act according to an epsilon-greedy strategy using 
         the agents q table
         """
+        self.epsilon *= EPSILON_DECAY
 
         if np.random.rand() < self.epsilon:
-            # TODO: take random action
-            pass
+            return self.action_space.sample()
         else:
-            # TODO: take action with max q value
-            pass
+            return np.argmax(self.q_table[observation])
 
     def learn(self, observation, action, reward, new_observation):
-        """update q table using reward
+        """update q table using reward, and decrease epsilon
         """
-        pass
+        self.q_table[observation][action] = (1 - ALPHA) * self.q_table[observation][action] + ALPHA * (
+            reward + np.max(self.q_table[new_observation])
+        )
