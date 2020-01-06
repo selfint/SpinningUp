@@ -1,5 +1,4 @@
 class Agent:
-
     def __init__(self, action_dim, observation_dim):
         self.action_dim = action_dim
         self.observation_dim = observation_dim
@@ -22,7 +21,4 @@ class Agent:
             new_observation {observation} -- env observation following agent action
         """
         raise NotImplementedError()
-
-
-
 
