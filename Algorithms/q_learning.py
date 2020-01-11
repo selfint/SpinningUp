@@ -88,15 +88,5 @@ class QLearner(Agent):
                 t_observation
             ][t_action] + ALPHA * (t_reward + np.max(self.q_table[t_next_observation]))
 
-    def buffer_transition(
-        self, observation, action, reward, next_observation
-    ) -> Transition:
-        """
-        add transition to replay buffer, and return the last given arguments as a transition
-        """
-        transition = Transition(observation, action, reward, next_observation)
-        self.replay_buffer.insert(0, transition)
-        if len(self.replay_buffer) > self.buffer_size:
-            self.replay_buffer.pop()
 
         return transition

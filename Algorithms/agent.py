@@ -37,3 +37,16 @@ class Agent:
             raise ValueError(
                 f"param {param_name} not in hyper params, and no default value was provided. "
             )
+
+    def buffer_transition(
+        self, observation, action, reward, next_observation
+    ) -> Transition:
+        """
+        add transition to replay buffer, and return the last given arguments as a transition
+        """
+        transition = Transition(observation, action, reward, next_observation)
+        self.replay_buffer.insert(0, transition)
+        if len(self.replay_buffer) > self.buffer_size:
+            self.replay_buffer.pop()
+
+        return transition
