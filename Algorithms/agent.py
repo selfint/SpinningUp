@@ -1,5 +1,8 @@
+import numpy as np
 from abc import ABC
 from collections import namedtuple
+
+from gym.spaces import Box, Discrete
 
 Transition = namedtuple("Transition", "observation action reward next_observation")
 
@@ -9,7 +12,17 @@ class Agent(ABC):
         self.action_space = action_space
         self.observation_space = observation_space
         self.hyper_params = hyper_params
-        
+
+        # get hyper params
+        for param_name, default_value in self.hyper_params.items():
+            self.get_hyper_param(param_name, default_value)
+
+        # report param values
+        vals = "\n" + "\n".join(
+            [f"{param_name}={getattr(self, param_name)}" for param_name in self.hyper_params]
+        )
+        print(f"Parameter values: {vals}")
+
         if "buffer_size" in hyper_params:
             self.replay_buffer = []
 
@@ -50,7 +63,7 @@ class Agent(ABC):
         """
         if not self.replay_buffer:
             self.replay_buffer = []
-        
+
         # generate transition and insert it into the buffer
         transition = Transition(observation, action, reward, next_observation)
         self.replay_buffer.insert(0, transition)
@@ -60,3 +73,19 @@ class Agent(ABC):
             self.replay_buffer.pop()
 
         return transition
+
+    @staticmethod
+    def get_space_size(space) -> int:
+        """Returns the size of a space as an int
+        
+        Arguments:
+            space {gym.space} -- Gym space object
+        
+        Returns:
+            int -- size of space
+        """
+
+        if isinstance(space, Discrete):
+            return space.n
+        elif isinstance(space, Box):
+            return np.prod(space.shape)

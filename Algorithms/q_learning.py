@@ -2,10 +2,9 @@ from random import choice
 from typing import List
 
 import numpy as np
-from gym.spaces import Discrete
 
 from agent import Agent, Transition
-
+from gym.spaces import Discrete
 
 DEFAULTS = {
     "epsilon_decay": 0.9999,  # rate at which agent stops taking random actions
@@ -21,6 +20,7 @@ class QLearner(Agent):
     action_space: Discrete
     observation_space: Discrete
     epsilon_decay: float
+    epsilon: float
     gamma: float
     alpha: float
     buffer_size: int
@@ -29,33 +29,15 @@ class QLearner(Agent):
     def __init__(
         self, action_space: Discrete, observation_space: Discrete, **hyper_params
     ):
-        super().__init__(action_space, observation_space, **hyper_params)
-
-        # only support discrete actions and obsercations
-        # TODO: add continuous space support
-        assert isinstance(
-            action_space, Discrete
-        ), "Only discrete action spaces supported. "
-        assert isinstance(
-            observation_space, Discrete
-        ), "Only discrete observation spaces supported. "
-
-        # generate empty q table
-        self.q_table = np.zeros(shape=(self.observation_space.n, self.action_space.n))
+        DEFAULTS.update(hyper_params)
+        super().__init__(action_space, observation_space, **DEFAULTS)
         self.epsilon = 1.0
-
-        # get hyper params
-        for param_name, default_value in DEFAULTS.items():
-            self.get_hyper_param(param_name, default_value)
-
-        # report param values
-        vals = "\n" + "\n".join(
-            [f"{param_name}={getattr(self, param_name)}" for param_name in DEFAULTS]
-        )
-        print(f"Parameter values: {vals}")
 
         # init replay buffer
         self.replay_buffer: List[Transition] = []
+
+        # init q table
+        self.q_table = self.generate_q_table()
 
     def act(self, observation):
         """
@@ -67,7 +49,7 @@ class QLearner(Agent):
         if np.random.rand() < self.epsilon:
             return self.action_space.sample()
         else:
-            return np.argmax(self.get_action_values(observation))
+            return self.get_best_action(observation)
 
     def learn(self, observation, action, reward, next_observation):
         """
@@ -89,10 +71,25 @@ class QLearner(Agent):
         for t_observation, t_action, t_reward, t_next_observation in transitions:
             self.q_table[t_observation][t_action] = (1 - self.alpha) * self.q_table[
                 t_observation
-            ][t_action] + self.alpha * (t_reward + np.max(self.q_table[t_next_observation]))
+            ][t_action] + self.alpha * (
+                t_reward + np.max(self.q_table[t_next_observation])
+            )
 
-    def get_action_values(self, observation) -> List[float]:
-        return self.q_table[observation]
+    def get_best_action(self, observation) -> List[float]:
+        return np.argmax(self.q_table[observation])
+
+    def generate_q_table(self) -> None:
+        # only support discrete actions and obsercations
+        # TODO: add continuous space support
+        assert isinstance(
+            self.action_space, Discrete
+        ), "Only discrete action spaces supported. "
+        assert isinstance(
+            self.observation_space, Discrete
+        ), "Only discrete observation spaces supported. "
+
+        # generate empty q table
+        return np.zeros(shape=(self.observation_space.n, self.action_space.n))
 
 
 if __name__ == "__main__":
