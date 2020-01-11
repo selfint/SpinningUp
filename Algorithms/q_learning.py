@@ -67,7 +67,7 @@ class QLearner(Agent):
         if np.random.rand() < self.epsilon:
             return self.action_space.sample()
         else:
-            return np.argmax(self.q_table[observation])
+            return np.argmax(self.get_action_values(observation))
 
     def learn(self, observation, action, reward, next_observation):
         """
@@ -91,6 +91,8 @@ class QLearner(Agent):
                 t_observation
             ][t_action] + self.alpha * (t_reward + np.max(self.q_table[t_next_observation]))
 
+    def get_action_values(self, observation) -> List[float]:
+        return self.q_table[observation]
 
 
 if __name__ == "__main__":
