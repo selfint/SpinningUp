@@ -1,9 +1,10 @@
+from abc import ABC
 from collections import namedtuple
 
 Transition = namedtuple("Transition", "observation action reward next_observation")
 
 
-class Agent:
+class Agent(ABC):
     def __init__(self, action_space, observation_space, **hyper_params):
         self.action_space = action_space
         self.observation_space = observation_space
