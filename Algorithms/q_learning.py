@@ -4,12 +4,15 @@ from typing import List
 import numpy as np
 from gym.spaces import Discrete
 
-from agent import Agent, Transition
+from Algorithms.agent import Agent, Transition
 
-EPSILON_DECAY = 0.9999  # rate at which agent stops taking random actions
-GAMMA = 0.999  # discount rate, how much are future rewards important
-ALPHA = 0.05  # learning rate, how much does one sample influence agent
-BUFFER_SIZE = 100  # size of replay buffer
+
+DEFAULTS = {
+    "epsilon_decay": 0.9999,  # rate at which agent stops taking random actions
+    "gamma": 0.999,  # discount rate, how much are future rewards important
+    "alpha": 0.05,  # learning rate, how much does one sample influence agent
+    "buffer_size": 100,  # size of replay buffer
+}
 
 
 class QLearner(Agent):
@@ -42,10 +45,11 @@ class QLearner(Agent):
         self.epsilon = 1.0
 
         # hyper params
-        self.get_hyper_param("epsilon_decay", EPSILON_DECAY)
-        self.get_hyper_param("gamma", GAMMA)
-        self.get_hyper_param("alpha", ALPHA)
-        self.get_hyper_param("buffer_size", BUFFER_SIZE)
+
+        self.get_hyper_param("epsilon_decay", 1)
+        # self.get_hyper_param("gamma", GAMMA)
+        # self.get_hyper_param("alpha", ALPHA)
+        # self.get_hyper_param("buffer_size", BUFFER_SIZE)
 
         # init replay buffer
         self.replay_buffer: List[Transition] = []
