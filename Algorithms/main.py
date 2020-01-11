@@ -2,8 +2,8 @@ import gym
 import matplotlib.pyplot as plt
 import numpy as np
 
-from .agent import Agent
-from .q_learning import QLearner
+from agent import Agent
+from q_learning import QLearner
 
 env_name = "Taxi-v2"
 env = gym.make(env_name)

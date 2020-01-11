@@ -8,6 +8,9 @@ class Agent:
         self.action_space = action_space
         self.observation_space = observation_space
         self.hyper_params = hyper_params
+        
+        if "buffer_size" in hyper_params:
+            self.replay_buffer = []
 
     def act(self, observation):
         """return an action from the action space
@@ -44,8 +47,14 @@ class Agent:
         """
         add transition to replay buffer, and return the last given arguments as a transition
         """
+        if not self.replay_buffer:
+            self.replay_buffer = []
+        
+        # generate transition and insert it into the buffer
         transition = Transition(observation, action, reward, next_observation)
         self.replay_buffer.insert(0, transition)
+
+        # keep buffer at buffer_size
         if len(self.replay_buffer) > self.buffer_size:
             self.replay_buffer.pop()
 

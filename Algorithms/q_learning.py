@@ -4,7 +4,7 @@ from typing import List
 import numpy as np
 from gym.spaces import Discrete
 
-from Algorithms.agent import Agent, Transition
+from agent import Agent, Transition
 
 
 DEFAULTS = {
@@ -44,12 +44,15 @@ class QLearner(Agent):
         self.q_table = np.zeros(shape=(self.observation_space.n, self.action_space.n))
         self.epsilon = 1.0
 
-        # hyper params
+        # get hyper params
+        for param_name, default_value in DEFAULTS.items():
+            self.get_hyper_param(param_name, default_value)
 
-        self.get_hyper_param("epsilon_decay", 1)
-        # self.get_hyper_param("gamma", GAMMA)
-        # self.get_hyper_param("alpha", ALPHA)
-        # self.get_hyper_param("buffer_size", BUFFER_SIZE)
+        # report param values
+        vals = "\n" + "\n".join(
+            [f"{param_name}={getattr(self, param_name)}" for param_name in DEFAULTS]
+        )
+        print(f"Parameter values: {vals}")
 
         # init replay buffer
         self.replay_buffer: List[Transition] = []
@@ -59,7 +62,7 @@ class QLearner(Agent):
         act according to an epsilon-greedy strategy using 
         the agents q table
         """
-        self.epsilon *= EPSILON_DECAY
+        self.epsilon *= self.epsilon_decay
 
         if np.random.rand() < self.epsilon:
             return self.action_space.sample()
@@ -84,9 +87,11 @@ class QLearner(Agent):
 
         # learn from transition and random transitions from the replay buffer
         for t_observation, t_action, t_reward, t_next_observation in transitions:
-            self.q_table[t_observation][t_action] = (1 - ALPHA) * self.q_table[
+            self.q_table[t_observation][t_action] = (1 - self.alpha) * self.q_table[
                 t_observation
-            ][t_action] + ALPHA * (t_reward + np.max(self.q_table[t_next_observation]))
+            ][t_action] + self.alpha * (t_reward + np.max(self.q_table[t_next_observation]))
 
 
-        return transition
+
+if __name__ == "__main__":
+    q = QLearner(Discrete(4), Discrete(4))
