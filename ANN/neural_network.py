@@ -156,7 +156,7 @@ class NeuralNetwork:
                 print(f"epoch {epoch}: loss={avg_cost}")
 
 if __name__ == "__main__":
-    n = NeuralNetwork(cost_function="cce", learning_rate=0.01)
+    n = NeuralNetwork(cost_function="mse", learning_rate=0.01)
     n.append_layer(Dense(size=10, input_dimensions=28 * 28, activation="lrelu"))
     n.append_layer(Dense(size=10, input_dimensions=10, activation="lrelu"))
     n.append_layer(Dense(size=10, input_dimensions=10, activation="sigmoid"))

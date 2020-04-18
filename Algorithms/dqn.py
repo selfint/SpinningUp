@@ -82,10 +82,20 @@ class DeepQLearner(QLearner):
         elif isinstance(self.action_space, Box):
             return self.q_table(observation)
 
-    def learn(self, observation, action, reward, next_observation):
-        """
-        Train the neural network using replay buffer
-        """
+    def update_q_table(self, t_observation, t_action, t_reward, t_next_observation):
+        batch_inputs = []
+        batch_outputs = []
+        for t_observation, t_action, t_reward, t_next_observation in transitions:
+            batch_inputs.append(t_observation)
+            update_value = self.q_table(t_observation)[t_action] + self.alpha * (np.max(self.q_table(t_next_observation)) + t_reward)
+            batch_outputs.append(update_value)
+
+
+            self.q_table[t_observation][t_action] = (1 - self.alpha) * self.q_table[
+                t_observation
+            ][t_action] + self.alpha * (
+                t_reward + np.max(self.q_table[t_next_observation])
+            )
 
 
 if __name__ == "__main__":

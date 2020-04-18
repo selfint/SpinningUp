@@ -68,6 +68,9 @@ class QLearner(Agent):
         ]
 
         # learn from transition and random transitions from the replay buffer
+        self.update_q_table(transitions)
+
+    def update_q_table(self, transitions):
         for t_observation, t_action, t_reward, t_next_observation in transitions:
             self.q_table[t_observation][t_action] = (1 - self.alpha) * self.q_table[
                 t_observation

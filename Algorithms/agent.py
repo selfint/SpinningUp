@@ -18,10 +18,10 @@ class Agent(ABC):
             self.get_hyper_param(param_name, default_value)
 
         # report param values
-        vals = "\n" + "\n".join(
+        values = "\n" + "\n".join(
             [f"{param_name}={getattr(self, param_name)}" for param_name in self.hyper_params]
         )
-        print(f"Parameter values: {vals}")
+        print(f"Parameter values: {values}")
 
         if "buffer_size" in hyper_params:
             self.replay_buffer = []

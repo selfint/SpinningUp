@@ -14,6 +14,8 @@ def mse(
 def cce(
     prediction: np.array, target: np.array, deriv: bool = False
 ) -> Union[np.array, float]:
+    # does not work right now
+    raise NotImplementedError("CCE doesn't work yet")
     if deriv:
         return -1 * (target / (prediction + 1e-15)) + (1 - target) / (1 - prediction + 1e-15)
     return -1 * sum(target * np.log(prediction))
